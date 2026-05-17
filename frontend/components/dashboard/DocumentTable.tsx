@@ -1,7 +1,9 @@
 'use client'
 
 import { Document } from '@/types'
-import { Download, Eye, Edit, Trash2, Archive } from 'lucide-react'
+import { Download, Eye, Edit, Trash2, Archive, FileText, Lock } from 'lucide-react'
+import EmptyState from '@/components/ui/EmptyState'
+import FileTypeIcon from '@/components/ui/FileTypeIcon'
 
 interface DocumentTableProps {
   documents: Document[]
@@ -29,6 +31,18 @@ export default function DocumentTable({
   onArchive,
   uploaderNames = {},
 }: DocumentTableProps) {
+  if (documents.length === 0) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <EmptyState
+          icon={FileText}
+          title="No documents yet"
+          description="When documents are uploaded, they'll show up here."
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
       <table className="w-full">
@@ -45,8 +59,22 @@ export default function DocumentTable({
         </thead>
         <tbody>
           {documents.map((doc) => (
-            <tr key={doc.id} className="border-b dark:border-gray-700">
-              <td className="py-3 px-4 text-gray-900 dark:text-white">{doc.title}</td>
+            <tr key={doc.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <td className="py-3 px-4 text-gray-900 dark:text-white">
+                <span className="inline-flex items-center gap-2">
+                  <FileTypeIcon fileType={doc.fileType} size={18} />
+                  <span>{doc.title}</span>
+                  {doc.is_locked && !doc.is_archived && (
+                    <span
+                      className="inline-flex items-center gap-1 text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full"
+                      title="Read-only — locked"
+                    >
+                      <Lock size={12} />
+                      Locked
+                    </span>
+                  )}
+                </span>
+              </td>
               <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{doc.category}</td>
               <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{doc.event}</td>
               <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{doc.administration}</td>
@@ -72,7 +100,7 @@ export default function DocumentTable({
                   >
                     <Eye size={18} />
                   </button>
-                  {!doc.is_archived && canEdit(doc) && onEdit && (
+                  {!doc.is_archived && !doc.is_locked && canEdit(doc) && onEdit && (
                     <button
                       onClick={() => onEdit(doc)}
                       className="text-yellow-500 hover:text-yellow-700"
@@ -81,7 +109,7 @@ export default function DocumentTable({
                       <Edit size={18} />
                     </button>
                   )}
-                  {!doc.is_archived && canDelete(doc) && onDelete && (
+                  {!doc.is_archived && !doc.is_locked && canDelete(doc) && onDelete && (
                     <button
                       onClick={() => onDelete(doc)}
                       className="text-red-500 hover:text-red-700"

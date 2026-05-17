@@ -21,7 +21,7 @@ export default function UserTable({ users, onRoleChange }: UserTableProps) {
         </thead>
         <tbody>
           {users.map((u) => (
-            <tr key={u.id} className="border-b dark:border-gray-700">
+            <tr key={u.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
               <td className="py-3 px-4 text-gray-900 dark:text-white">{u.email}</td>
               <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{u.fullName}</td>
               <td className="py-3 px-4">

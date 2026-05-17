@@ -22,10 +22,18 @@ export interface Document {
   fileType: 'pdf' | 'docx'
 }
 
+export interface Administration {
+  id: string
+  name: string
+  startDate: string
+  endDate: string | null
+  createdAt: string
+}
+
 export interface ActivityLog {
   id: string
   userId: string
-  action: 'upload' | 'download' | 'view' | 'archive' | 'login'
+  action: 'upload' | 'download' | 'view' | 'archive' | 'lock' | 'unlock' | 'login'
   documentId?: string
   timestamp: string
 }

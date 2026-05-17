@@ -10,11 +10,14 @@ import { useUserStore } from '@/lib/stores/userStore'
 import { useActivityStore } from '@/lib/stores/activityStore'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Card from '@/components/ui/Card'
+import BarChart from '@/components/charts/BarChart'
 import DocumentTable from '@/components/dashboard/DocumentTable'
 import ArchiveList from '@/components/dashboard/ArchiveList'
 import DocumentViewerModal from '@/components/dashboard/DocumentViewerModal'
 import { FileText, Archive } from 'lucide-react'
 import { Document } from '@/types'
+import { mockCategories } from '@/lib/mockData'
+import { toast } from '@/lib/stores/toastStore'
 
 export default function MemberDashboard() {
   return (
@@ -29,7 +32,7 @@ function MemberDashboardContent() {
   const searchParams = useSearchParams()
   const tab = searchParams.get('tab') || 'dashboard'
   
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated, hasHydrated } = useAuthStore()
   const { documents } = useDocumentStore()
   const { users } = useUserStore()
   const { addLog } = useActivityStore()
@@ -39,10 +42,11 @@ function MemberDashboardContent() {
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null)
 
   useEffect(() => {
+    if (!hasHydrated) return
     if (!isAuthenticated || user?.role !== 'member') {
       router.push('/login')
     }
-  }, [isAuthenticated, user, router])
+  }, [hasHydrated, isAuthenticated, user, router])
 
   if (!user) return null
 
@@ -73,12 +77,17 @@ function MemberDashboardContent() {
 
   const handleDownload = (doc: Document) => {
     addLog({ userId: user.id, action: 'download', documentId: doc.id })
-    alert('Download started: ' + doc.title)
+    toast.info('Download started: ' + doc.title)
   }
 
   const totalDocs = documents.filter(d => !d.is_archived).length
   const archivedDocs = documents.filter(d => d.is_archived).length
   const recentDocs = documents.filter(d => !d.is_archived).slice(0, 5)
+
+  const categoryData = mockCategories.map(c => ({
+    name: c,
+    value: documents.filter(d => d.category === c && !d.is_archived).length,
+  }))
 
   return (
     <DashboardLayout tabs={tabs} activeTab={tab === 'documents' ? 'Documents' : tab === 'archive' ? 'Archive' : 'Dashboard'}>
@@ -89,6 +98,11 @@ function MemberDashboardContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card title="Accessible Documents" value={totalDocs} icon={<FileText size={32} />} />
             <Card title="Archived Documents" value={archivedDocs} icon={<Archive size={32} />} />
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Documents by Category</h2>
+            <BarChart data={categoryData} />
           </div>
 
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">

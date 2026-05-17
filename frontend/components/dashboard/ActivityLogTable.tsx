@@ -79,7 +79,7 @@ export default function ActivityLogTable({
               const logUser = users.find(u => u.id === log.userId)
               const doc = log.documentId ? documents.find(d => d.id === log.documentId) : null
               return (
-                <tr key={log.id} className="border-b dark:border-gray-700">
+                <tr key={log.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                   <td className="py-3 px-4 text-gray-900 dark:text-white">{logUser?.fullName}</td>
                   <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{log.action}</td>
                   <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{doc?.title || 'N/A'}</td>
