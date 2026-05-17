@@ -4,6 +4,7 @@ import { Document } from '@/types'
 import { Download, Eye, Edit, Trash2, Archive, FileText, Lock } from 'lucide-react'
 import EmptyState from '@/components/ui/EmptyState'
 import FileTypeIcon from '@/components/ui/FileTypeIcon'
+import Skeleton from '@/components/ui/Skeleton'
 
 interface DocumentTableProps {
   documents: Document[]
@@ -17,6 +18,7 @@ interface DocumentTableProps {
   onDelete?: (doc: Document) => void
   onArchive?: (doc: Document) => void
   uploaderNames?: Record<string, string>
+  isLoading?: boolean
 }
 
 export default function DocumentTable({
@@ -30,7 +32,24 @@ export default function DocumentTable({
   onDelete,
   onArchive,
   uploaderNames = {},
+  isLoading = false,
 }: DocumentTableProps) {
+  if (isLoading && documents.length === 0) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-3">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-4">
+            <Skeleton className="h-5 w-5 shrink-0" />
+            <Skeleton className="h-4 flex-1" />
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-20" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   if (documents.length === 0) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow">

@@ -55,6 +55,7 @@ function AdminDashboardContent() {
   const { user, isAuthenticated, usingMock, hasHydrated } = useAuthStore()
   const {
     documents,
+    loading: documentsLoading,
     fetchDocuments,
     addDocument,
     updateDocument,
@@ -420,6 +421,7 @@ function AdminDashboardContent() {
             onDelete={handleDelete}
             onArchive={handleArchive}
             uploaderNames={uploaderNames}
+            isLoading={documentsLoading}
           />
         </div>
       )}
