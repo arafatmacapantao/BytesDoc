@@ -3,11 +3,16 @@ import { FileText, Lock, Archive, Activity, ArrowRight, Github } from 'lucide-re
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-primary via-accent to-primary dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Decorative blobs */}
-      <div className="pointer-events-none absolute -top-40 -left-32 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl" />
-      <div className="pointer-events-none absolute top-1/3 -right-32 h-96 w-96 rounded-full bg-indigo-400/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 left-1/3 h-96 w-96 rounded-full bg-cyan-400/15 blur-3xl" />
+    <div className="relative min-h-screen overflow-hidden bg-[#0d0d0d] text-white">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
+          backgroundSize: '22px 22px',
+        }}
+      />
+      <div className="pointer-events-none absolute -top-40 -left-32 h-96 w-96 rounded-full bg-white/[0.05] blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-40 left-1/3 h-96 w-96 rounded-full bg-white/[0.03] blur-3xl" />
 
       <div className="relative container mx-auto px-4 py-20">
         <div className="text-center mb-20">
@@ -24,7 +29,7 @@ export default function LandingPage() {
           <div className="flex items-center justify-center gap-3">
             <Link
               href="/login"
-              className="group inline-flex items-center gap-2 bg-white text-primary px-7 py-3 rounded-lg font-semibold shadow-elevated hover:bg-gray-100 transition"
+              className="group inline-flex items-center gap-2 bg-white text-black px-7 py-3 rounded-lg font-semibold shadow-elevated hover:bg-gray-100 transition"
             >
               Login
               <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" />
@@ -33,7 +38,7 @@ export default function LandingPage() {
               href="https://github.com/0-0april/BytesDoc"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-white/10 text-white px-7 py-3 rounded-lg font-semibold ring-1 ring-white/20 backdrop-blur-sm hover:bg-white/20 transition"
+              className="inline-flex items-center gap-2 bg-white/[0.06] text-white px-7 py-3 rounded-lg font-semibold ring-1 ring-white/15 backdrop-blur-sm hover:bg-white/[0.1] hover:ring-white/25 transition"
             >
               <Github size={18} />
               View on GitHub
@@ -45,10 +50,10 @@ export default function LandingPage() {
           {features.map(f => (
             <div
               key={f.title}
-              className="group bg-white/10 backdrop-blur-sm p-6 rounded-xl text-white ring-1 ring-white/15 hover:bg-white/15 hover:ring-white/30 transition"
+              className="group bg-white/[0.04] backdrop-blur-sm p-6 rounded-xl text-white ring-1 ring-white/10 hover:bg-white/[0.07] hover:ring-white/25 hover:-translate-y-0.5 transition-all duration-200"
             >
-              <div className="inline-flex items-center justify-center rounded-lg bg-white/15 p-3 mb-4 ring-1 ring-white/20">
-                <f.icon className="w-6 h-6" />
+              <div className="inline-flex items-center justify-center rounded-lg bg-white/[0.06] p-3 mb-4 ring-1 ring-white/10">
+                <f.icon className="w-6 h-6 text-gray-200" />
               </div>
               <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
               <p className="text-sm text-gray-200/90 leading-relaxed">{f.body}</p>

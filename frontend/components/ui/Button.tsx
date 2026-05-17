@@ -20,7 +20,7 @@ export default function Button({
   isLoading = false,
   disabled = false,
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed'
+  const baseStyles = 'inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/40 dark:focus-visible:ring-offset-gray-900 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100'
   const variants = {
     primary: 'bg-primary text-white hover:bg-accent',
     secondary: 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600',

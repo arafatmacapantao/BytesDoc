@@ -1,9 +1,10 @@
 'use client'
 
 import { Document } from '@/types'
-import { Download, Eye, Edit, Trash2, Archive, FileText, Lock, Unlock } from 'lucide-react'
+import { Download, Eye, Edit, Trash2, Archive, FileText, Lock } from 'lucide-react'
 import EmptyState from '@/components/ui/EmptyState'
 import FileTypeIcon from '@/components/ui/FileTypeIcon'
+import Skeleton from '@/components/ui/Skeleton'
 
 interface DocumentTableProps {
   documents: Document[]
@@ -11,15 +12,13 @@ interface DocumentTableProps {
   canEdit: (doc: Document) => boolean
   canDelete: (doc: Document) => boolean
   canArchive: boolean
-  canLock?: (doc: Document) => boolean
   onView: (doc: Document) => void
   onDownload: (doc: Document) => void
   onEdit?: (doc: Document) => void
   onDelete?: (doc: Document) => void
   onArchive?: (doc: Document) => void
-  onLock?: (doc: Document) => void
-  onUnlock?: (doc: Document) => void
   uploaderNames?: Record<string, string>
+  isLoading?: boolean
 }
 
 export default function DocumentTable({
@@ -27,16 +26,30 @@ export default function DocumentTable({
   canEdit,
   canDelete,
   canArchive,
-  canLock,
   onView,
   onDownload,
   onEdit,
   onDelete,
   onArchive,
-  onLock,
-  onUnlock,
   uploaderNames = {},
+  isLoading = false,
 }: DocumentTableProps) {
+  if (isLoading && documents.length === 0) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-3">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-4">
+            <Skeleton className="h-5 w-5 shrink-0" />
+            <Skeleton className="h-4 flex-1" />
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-20" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   if (documents.length === 0) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
@@ -53,14 +66,14 @@ export default function DocumentTable({
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b dark:border-gray-700">
-            <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Title</th>
-            <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Category</th>
-            <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Event</th>
-            <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Administration</th>
-            <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Uploaded By</th>
-            <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Date</th>
-            <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Actions</th>
+          <tr className="border-b border-border-subtle dark:border-white/5 bg-gray-50/80 dark:bg-gray-900/40">
+            <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Title</th>
+            <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Category</th>
+            <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Event</th>
+            <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Administration</th>
+            <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Uploaded By</th>
+            <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Date</th>
+            <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -122,24 +135,6 @@ export default function DocumentTable({
                       title="Delete"
                     >
                       <Trash2 size={18} />
-                    </button>
-                  )}
-                  {!doc.is_archived && !doc.is_locked && canLock && canLock(doc) && onLock && (
-                    <button
-                      onClick={() => onLock(doc)}
-                      className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                      title="Lock (read-only)"
-                    >
-                      <Lock size={18} />
-                    </button>
-                  )}
-                  {!doc.is_archived && doc.is_locked && canLock && canLock(doc) && onUnlock && (
-                    <button
-                      onClick={() => onUnlock(doc)}
-                      className="text-emerald-500 hover:text-emerald-700"
-                      title="Unlock"
-                    >
-                      <Unlock size={18} />
                     </button>
                   )}
                   {!doc.is_archived && canArchive && onArchive && (

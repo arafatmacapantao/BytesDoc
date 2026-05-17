@@ -87,13 +87,13 @@ export default function ArchiveList({
         ) : (
         <table className="w-full">
           <thead>
-            <tr className="border-b dark:border-gray-700">
-              <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Title</th>
-              <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Category</th>
-              <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Administration</th>
-              <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Uploaded By</th>
-              <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Archived Date</th>
-              <th className="text-left py-3 px-4 text-gray-900 dark:text-white">Actions</th>
+            <tr className="border-b border-border-subtle dark:border-white/5 bg-gray-50/80 dark:bg-gray-900/40">
+              <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Title</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Category</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Administration</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Uploaded By</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Archived Date</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Actions</th>
             </tr>
           </thead>
           <tbody>
