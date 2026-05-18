@@ -2,7 +2,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { User } from '@/types'
-import { apiLogin, apiLogout } from '@/lib/api'
+import { apiLogin, apiLogout, apiUpdateProfile } from '@/lib/api'
 
 interface AuthState {
   user: User | null
@@ -16,6 +16,7 @@ interface AuthState {
   logout: () => Promise<void>
   setUser: (user: User) => void
   setHasHydrated: (v: boolean) => void
+  updateProfile: (name: string) => Promise<void>
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -62,6 +63,11 @@ export const useAuthStore = create<AuthState>()(
 
       setUser: (user: User) => set({ user }),
       setHasHydrated: (v: boolean) => set({ hasHydrated: v }),
+
+      updateProfile: async (name: string) => {
+        const updated = await apiUpdateProfile({ name })
+        set({ user: updated })
+      },
     }),
     {
       name: 'auth-storage',

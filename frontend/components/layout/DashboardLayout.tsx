@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useAuthStore } from '@/lib/stores/authStore'
-import { Menu, X, LogOut, Moon, Sun, Search } from 'lucide-react'
+import { Menu, X, LogOut, Moon, Sun, Search, Pencil } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import CommandPalette from '@/components/ui/CommandPalette'
+import ProfileModal from '@/components/ui/ProfileModal'
 
 interface Tab {
   name: string
@@ -23,7 +24,8 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children, tabs, activeTab }: DashboardLayoutProps) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [paletteOpen, setPaletteOpen] = useState(false)
-  const { user, logout } = useAuthStore()
+  const [profileOpen, setProfileOpen] = useState(false)
+  const { user, logout, updateProfile } = useAuthStore()
   const router = useRouter()
   const { theme, setTheme } = useTheme()
 
@@ -95,12 +97,20 @@ export default function DashboardLayout({ children, tabs, activeTab }: Dashboard
 
         <div className="px-3 py-3 border-t border-white/10 space-y-2">
           {user && (
-            <div className="px-3 py-2 min-w-0">
-              <p className="text-xs font-bold text-white leading-none truncate">{user.fullName}</p>
+            <button
+              type="button"
+              onClick={() => setProfileOpen(true)}
+              title="Edit your name"
+              className="group w-full text-left px-3 py-2 min-w-0 rounded-md hover:bg-white/5 transition-colors"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <p className="text-xs font-bold text-white leading-none truncate flex-1">{user.fullName}</p>
+                <Pencil size={12} className="text-gray-500 group-hover:text-gray-200 transition-colors shrink-0" />
+              </div>
               <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">
                 {user.role?.replace('_', ' ')}
               </p>
-            </div>
+            </button>
           )}
           <button
             onClick={handleLogout}
@@ -168,12 +178,22 @@ export default function DashboardLayout({ children, tabs, activeTab }: Dashboard
                 </button>
 
                 {/* User info (< lg only — sidebar shows it on lg+) */}
-                <div className="hidden sm:flex lg:hidden flex-col items-end mr-2">
-                  <span className="text-xs font-bold text-white leading-none">{user?.fullName}</span>
-                  <span className="text-[10px] text-gray-400 uppercase tracking-widest">
-                    {user?.role?.replace('_', ' ')}
-                  </span>
-                </div>
+                {user && (
+                  <button
+                    type="button"
+                    onClick={() => setProfileOpen(true)}
+                    title="Edit your name"
+                    className="group hidden sm:flex lg:hidden flex-col items-end mr-2 px-2 py-1 rounded-md hover:bg-white/5 transition-colors"
+                  >
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-white leading-none">
+                      {user.fullName}
+                      <Pencil size={11} className="text-gray-500 group-hover:text-gray-200 transition-colors" />
+                    </span>
+                    <span className="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">
+                      {user.role?.replace('_', ' ')}
+                    </span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -185,6 +205,13 @@ export default function DashboardLayout({ children, tabs, activeTab }: Dashboard
       </div>
 
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} tabs={tabs} />
+
+      <ProfileModal
+        isOpen={profileOpen}
+        onClose={() => setProfileOpen(false)}
+        currentName={user?.fullName ?? ''}
+        onSave={updateProfile}
+      />
     </div>
   )
 }

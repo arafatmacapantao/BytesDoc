@@ -102,6 +102,29 @@ router.post('/', requireAuth, requireRole('chief_minister'), async (req, res, ne
   }
 })
 
+// PATCH /api/users/:id — chief_minister can rename any user
+router.patch('/:id', requireAuth, requireRole('chief_minister'), async (req, res, next) => {
+  try {
+    const name = typeof req.body?.name === 'string' ? req.body.name.trim() : ''
+    if (!name) return res.status(400).json({ error: 'name is required' })
+    if (name.length > 80) return res.status(400).json({ error: 'name too long (max 80)' })
+
+    const { data, error } = await supabase
+      .from('users')
+      .update({ name })
+      .eq('id', req.params.id)
+      .select('id, email, name, role:roles(role_name), created_at')
+      .single<ProfileRow>()
+
+    if (error || !data) {
+      return res.status(404).json({ error: 'user not found' })
+    }
+    res.json(toUser(data))
+  } catch (err) {
+    next(err)
+  }
+})
+
 // PUT /api/users/:id/role — change a user's role (chief_minister only)
 router.put('/:id/role', requireAuth, requireRole('chief_minister'), async (req: AuthedRequest, res, next) => {
   try {

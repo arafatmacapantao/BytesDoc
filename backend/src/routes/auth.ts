@@ -105,4 +105,26 @@ router.get('/me', requireAuth, async (req: AuthedRequest, res, next) => {
   }
 })
 
+router.patch('/me', requireAuth, async (req: AuthedRequest, res, next) => {
+  try {
+    const name = typeof req.body?.name === 'string' ? req.body.name.trim() : ''
+    if (!name) return res.status(400).json({ error: 'name is required' })
+    if (name.length > 80) return res.status(400).json({ error: 'name too long (max 80)' })
+
+    const { data, error } = await supabase
+      .from('users')
+      .update({ name })
+      .eq('id', req.user!.id)
+      .select('id, email, name, role:roles(role_name), created_at')
+      .single<ProfileRow>()
+
+    if (error || !data) {
+      return res.status(500).json({ error: error?.message ?? 'update failed' })
+    }
+    res.json(toUser(data))
+  } catch (err) {
+    next(err)
+  }
+})
+
 export default router

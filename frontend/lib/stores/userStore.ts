@@ -2,7 +2,7 @@
 import { create } from 'zustand'
 import { User } from '@/types'
 import { mockUsers } from '@/lib/mockData'
-import { apiGetUsers, apiInviteUser, apiUpdateUserRole } from '@/lib/api'
+import { apiGetUsers, apiInviteUser, apiUpdateUserRole, apiUpdateUserName } from '@/lib/api'
 import { useAuthStore } from './authStore'
 
 interface UserState {
@@ -11,6 +11,7 @@ interface UserState {
   fetchUsers: () => Promise<void>
   inviteUser: (input: { email: string; fullName: string; role: User['role'] }) => Promise<User>
   updateUserRole: (id: string, role: User['role']) => Promise<void>
+  updateUserName: (id: string, name: string) => Promise<void>
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
@@ -71,6 +72,25 @@ export const useUserStore = create<UserState>((set, get) => ({
       }))
     } catch {
       await get().fetchUsers()
+    }
+  },
+
+  updateUserName: async (id, name) => {
+    const { usingMock } = useAuthStore.getState()
+    // Optimistic
+    set(state => ({
+      users: state.users.map(u => u.id === id ? { ...u, fullName: name } : u),
+    }))
+    if (usingMock) return
+
+    try {
+      const updated = await apiUpdateUserName(id, name)
+      set(state => ({
+        users: state.users.map(u => u.id === id ? updated : u),
+      }))
+    } catch (err) {
+      await get().fetchUsers()
+      throw err
     }
   },
 }))

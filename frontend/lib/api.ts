@@ -157,6 +157,13 @@ export async function apiMe() {
   return apiFetch<import('@/types').User>('/auth/me')
 }
 
+export async function apiUpdateProfile(payload: { name: string }) {
+  return apiFetch<import('@/types').User>('/auth/me', {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
 // ─── Documents ──────────────────────────────────────────────────────────────
 
 export interface DocumentsQuery {
@@ -338,6 +345,13 @@ export async function apiUpdateUserRole(userId: string, role: import('@/types').
   return apiFetch<import('@/types').User>(`/users/${userId}/role`, {
     method: 'PUT',
     body: JSON.stringify({ role }),
+  })
+}
+
+export async function apiUpdateUserName(userId: string, name: string) {
+  return apiFetch<import('@/types').User>(`/users/${userId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ name }),
   })
 }
 
